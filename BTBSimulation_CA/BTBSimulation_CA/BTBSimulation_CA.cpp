@@ -61,7 +61,18 @@ void main(int argc, char *argv[])
 	string *trace = NULL;
 	bool flag = false;
 
-	 ParseInput(argv[1],count);
+	//ParseInput(argv[1],count);
+	//ifstream input;
+	//int count = 0;
+	input.open(argv[1]);
+	//string line;
+
+	if (input.is_open()) {
+		while (getline(input, line))
+			count++;
+	}
+	input.close();
+
 	trace = new string[count];
 	input.open(argv[1]);
 
@@ -73,7 +84,7 @@ void main(int argc, char *argv[])
 			i++;
 		}
 	}
-
+	int index = 0;
 	for (int i = 0; i < count; i++) {
 
 		flag = false;
@@ -82,6 +93,7 @@ void main(int argc, char *argv[])
 		for (int j = 0; j < counterBTB; j++) {
 			if (trace[i] == BTB[j][0]) {
 				flag = true;
+				index = j;
 				break;
 			}
 		}
@@ -116,54 +128,54 @@ void main(int argc, char *argv[])
 			if (result != trace[i + 1]) {
 				
 				//right prediction
-				if (BTB[i][2] == "Taken") {
+				if (BTB[index][2] == "Taken") {
 
 					//right address
-					if (trace[i + 1] == BTB[i][1]) {
+					if (trace[i + 1] == BTB[index][1]) {
 						rightPrediction++;
-						BTB[i][2] = "Taken";
-						BTB[i][3] = "00";
+						BTB[index][2] = "Taken";
+						BTB[index][3] = "00";
 					}
 
 					//wrong address
 					else
 					{
 						wrongPrediction++;
-						BTB[i][1] = trace[i + 1];
+						BTB[index][1] = trace[i + 1];
 
 					}
 				}
 				else
-				if (BTB[i][2] == "NotTaken" && BTB[i][3] == "11") {
+				if (BTB[index][2] == "NotTaken" && BTB[index][3] == "11") {
 					wrongPrediction++;
-					BTB[i][2] = "NotTaken";
-					BTB[i][3] = "10";
+					BTB[index][2] = "NotTaken";
+					BTB[index][3] = "10";
 				}
 				else 
-					if (BTB[i][2] == "NotTaken" && BTB[i][3] == "10") {
+					if (BTB[index][2] == "NotTaken" && BTB[index][3] == "10") {
 						wrongPrediction++;
-						BTB[i][2] = "Taken";
-						BTB[i][3] = "01";
+						BTB[index][2] = "Taken";
+						BTB[index][3] = "01";
 					}
 			}
 
 			//not taken-trace
 			if (result == trace[i + 1]) {
 
-				if (BTB[i][2] == "Taken" && BTB[i][3]=="00") {
+				if (BTB[index][2] == "Taken" && BTB[index][3]=="00") {
 					wrongPrediction++;
-					BTB[i][2] = "Taken";
-					BTB[i][3] = "01";
+					BTB[index][2] = "Taken";
+					BTB[index][3] = "01";
 				}
-				else if (BTB[i][2] == "Taken" && BTB[i][3] == "01") {
+				else if (BTB[index][2] == "Taken" && BTB[index][3] == "01") {
 					wrongPrediction++;
-					BTB[i][2] = " NotTaken";
-					BTB[i][3] = "10";
+					BTB[index][2] = " NotTaken";
+					BTB[index][3] = "10";
 				}
-				else if (BTB[i][2] == "NotTaken") {
+				else if (BTB[index][2] == "NotTaken") {
 					rightPrediction++;
-					BTB[i][2] = " NotTaken";
-					BTB[i][3] = "11";
+					BTB[index][2] = " NotTaken";
+					BTB[index][3] = "11";
 				}
 
 			}
@@ -173,4 +185,3 @@ void main(int argc, char *argv[])
 	getchar();
 	getchar();
 }
-
