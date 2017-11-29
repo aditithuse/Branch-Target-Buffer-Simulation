@@ -34,6 +34,8 @@ string VerifyNextAddress(string trace) {
 	return result;
 }
 
+
+
 void main(int argc, char *argv[])
 {
 	int BTBSize = 0, count = 0, i = 0, j = 0;
@@ -80,7 +82,6 @@ void main(int argc, char *argv[])
 		for (int j = 0; j < counterBTB; j++) {
 			if (trace[i] == BTB[j][0]) {
 				flag = true;
-				int index = i;
 				break;
 			}
 		}
@@ -104,6 +105,67 @@ void main(int argc, char *argv[])
 					BTB[counterBTB][3] = "00";
 					counterBTB++;
 				}
+			}
+		}
+
+		if (flag == true) {
+			hit++;
+
+			string result = VerifyNextAddress(trace[i]);
+			//taken
+			if (result != trace[i + 1]) {
+				
+				//right prediction
+				if (BTB[i][2] == "Taken") {
+
+					//right address
+					if (trace[i + 1] == BTB[i][1]) {
+						rightPrediction++;
+						BTB[i][2] = "Taken";
+						BTB[i][3] = "00";
+					}
+
+					//wrong address
+					else
+					{
+						wrongPrediction++;
+						BTB[i][1] = trace[i + 1];
+
+					}
+				}
+				else
+				if (BTB[i][2] == "NotTaken" && BTB[i][3] == "11") {
+					wrongPrediction++;
+					BTB[i][2] = "NotTaken";
+					BTB[i][3] = "10";
+				}
+				else 
+					if (BTB[i][2] == "NotTaken" && BTB[i][3] == "10") {
+						wrongPrediction++;
+						BTB[i][2] = "Taken";
+						BTB[i][3] = "01";
+					}
+			}
+
+			//not taken-trace
+			if (result == trace[i + 1]) {
+
+				if (BTB[i][2] == "Taken" && BTB[i][3]=="00") {
+					wrongPrediction++;
+					BTB[i][2] = "Taken";
+					BTB[i][3] = "01";
+				}
+				else if (BTB[i][2] == "Taken" && BTB[i][3] == "01") {
+					wrongPrediction++;
+					BTB[i][2] = " NotTaken";
+					BTB[i][3] = "10";
+				}
+				else if (BTB[i][2] == "NotTaken") {
+					rightPrediction++;
+					BTB[i][2] = " NotTaken";
+					BTB[i][3] = "11";
+				}
+
 			}
 		}
 	}
