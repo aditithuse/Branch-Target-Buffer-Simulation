@@ -12,7 +12,7 @@
 
 using namespace std;
 
-int ParseInput(string filePath,int &count) {
+int ParseInput(string filePath, int &count) {
 	ifstream input;
 	//int count = 0;
 	input.open(filePath);
@@ -39,15 +39,12 @@ string VerifyNextAddress(string trace) {
 void main(int argc, char *argv[])
 {
 	int BTBSize = 0, count = 0, i = 0, j = 0;
-	cout << "Enter BTB Size:\t";
-	cin >> BTBSize;
+	//cout << "Enter BTB Size:\t";
+	//cin >> BTBSize;
 
-	string **BTB = new string*[4];
+	string BTB[256][4];
 
-	for (i = 0; i < BTBSize; i++)
-		BTB[i] = new string[4];
-
-	for (int i = 0; i < BTBSize; i++)
+	for (int i = 0; i < 256; i++)
 		for (int j = 0; j < 4; j++)
 			BTB[i][j] = "";
 
@@ -64,6 +61,7 @@ void main(int argc, char *argv[])
 	//ParseInput(argv[1],count);
 	//ifstream input;
 	//int count = 0;
+	//input.open("C://Users//Aditi//Documents//Visual Studio 2017//Projects//ConsoleApplication1//ConsoleApplication1//trace_sample.txt");
 	input.open(argv[1]);
 	//string line;
 
@@ -101,7 +99,7 @@ void main(int argc, char *argv[])
 		//if entry not in BTB
 		if (flag == false) {
 			string result = VerifyNextAddress(trace[i]);
-			
+
 			//if branch not taken
 			if (trace[i + 1] == result)
 				continue;
@@ -126,7 +124,7 @@ void main(int argc, char *argv[])
 			string result = VerifyNextAddress(trace[i]);
 			//taken
 			if (result != trace[i + 1]) {
-				
+
 				//right prediction
 				if (BTB[index][2] == "Taken") {
 
@@ -142,27 +140,26 @@ void main(int argc, char *argv[])
 					{
 						wrongPrediction++;
 						BTB[index][1] = trace[i + 1];
-
 					}
 				}
 				else
-				if (BTB[index][2] == "NotTaken" && BTB[index][3] == "11") {
-					wrongPrediction++;
-					BTB[index][2] = "NotTaken";
-					BTB[index][3] = "10";
-				}
-				else 
-					if (BTB[index][2] == "NotTaken" && BTB[index][3] == "10") {
+					if (BTB[index][2] == "NotTaken" && BTB[index][3] == "11") {
 						wrongPrediction++;
-						BTB[index][2] = "Taken";
-						BTB[index][3] = "01";
+						BTB[index][2] = "NotTaken";
+						BTB[index][3] = "10";
 					}
+					else
+						if (BTB[index][2] == "NotTaken" && BTB[index][3] == "10") {
+							wrongPrediction++;
+							BTB[index][2] = "Taken";
+							BTB[index][3] = "01";
+						}
 			}
 
 			//not taken-trace
 			if (result == trace[i + 1]) {
 
-				if (BTB[index][2] == "Taken" && BTB[index][3]=="00") {
+				if (BTB[index][2] == "Taken" && BTB[index][3] == "00") {
 					wrongPrediction++;
 					BTB[index][2] = "Taken";
 					BTB[index][3] = "01";
