@@ -36,15 +36,28 @@ string VerifyNextAddress(string trace) {
 
 
 
+
+int MapAddress(string address) {
+	string str = "";
+	str += address[3];
+	str += address[4];
+	str += address[5];
+
+	int num = stoi(str, 0, 16) / 4;
+
+	return num;
+
+}
+
 void main(int argc, char *argv[])
 {
 	int BTBSize = 0, count = 0, i = 0, j = 0;
 	//cout << "Enter BTB Size:\t";
 	//cin >> BTBSize;
 
-	string BTB[256][4];
+	string BTB[1024][4];
 
-	for (int i = 0; i < 256; i++)
+	for (int i = 0; i < 1024; i++)
 		for (int j = 0; j < 4; j++)
 			BTB[i][j] = "";
 
@@ -58,19 +71,15 @@ void main(int argc, char *argv[])
 	string *trace = NULL;
 	bool flag = false;
 
-	//ParseInput(argv[1],count);
-	//ifstream input;
-	//int count = 0;
 	//input.open("C://Users//Aditi//Documents//Visual Studio 2017//Projects//ConsoleApplication1//ConsoleApplication1//trace_sample.txt");
 	input.open(argv[1]);
-	//string line;
 
 	if (input.is_open()) {
 		while (getline(input, line))
 			count++;
 	}
 	input.close();
-
+	int bufferIndex = 0;
 	trace = new string[count];
 	input.open(argv[1]);
 
@@ -84,20 +93,20 @@ void main(int argc, char *argv[])
 	}
 	int index = 0;
 	for (int i = 0; i < count; i++) {
-
+		
 		flag = false;
 
 		//check whether entry is in BTB
-		for (int j = 0; j < counterBTB; j++) {
-			if (trace[i] == BTB[j][0]) {
-				flag = true;
-				index = j;
-				break;
-			}
+		bufferIndex = MapAddress(trace[i]);
+		if(trace[i]==BTB[bufferIndex][0])
+		{
+			flag = true;
+			index = bufferIndex;
 		}
+		
 
 		//if entry not in BTB
-		if (flag == false) {
+		if (flag == false && (i + 1)<count) {
 			string result = VerifyNextAddress(trace[i]);
 
 			//if branch not taken
@@ -108,23 +117,29 @@ void main(int argc, char *argv[])
 			else
 			{
 				miss++;
-				if (counterBTB < BTBSize) {
-					BTB[counterBTB][0] = trace[i];
-					BTB[counterBTB][1] = trace[i + 1];
-					BTB[counterBTB][2] = "Taken";
-					BTB[counterBTB][3] = "00";
-					counterBTB++;
+				bufferIndex = MapAddress(trace[i]);
+				if (BTB[bufferIndex][0] != "") {
+					collisions++;
 				}
+
+				BTB[bufferIndex][0] = trace[i];
+				BTB[bufferIndex][1] = trace[i + 1];
+				BTB[bufferIndex][2] = "Taken";
+				BTB[bufferIndex][3] = "00";
+				
 			}
 		}
 
 		if (flag == true) {
+			
 			hit++;
+
 
 			string result = VerifyNextAddress(trace[i]);
 			//taken
 			if (result != trace[i + 1]) {
 
+				//trace taken BTB-taken 
 				//right prediction
 				if (BTB[index][2] == "Taken") {
 
@@ -142,18 +157,18 @@ void main(int argc, char *argv[])
 						BTB[index][1] = trace[i + 1];
 					}
 				}
-				else
+				//trace-taken BTB-NOtTaken
+				else {
+					wrongPrediction++;
 					if (BTB[index][2] == "NotTaken" && BTB[index][3] == "11") {
-						wrongPrediction++;
 						BTB[index][2] = "NotTaken";
 						BTB[index][3] = "10";
 					}
-					else
-						if (BTB[index][2] == "NotTaken" && BTB[index][3] == "10") {
-							wrongPrediction++;
+					else if (BTB[index][2] == "NotTaken" && BTB[index][3] == "10") {
 							BTB[index][2] = "Taken";
 							BTB[index][3] = "01";
-						}
+					}
+				}
 			}
 
 			//not taken-trace
@@ -166,18 +181,26 @@ void main(int argc, char *argv[])
 				}
 				else if (BTB[index][2] == "Taken" && BTB[index][3] == "01") {
 					wrongPrediction++;
-					BTB[index][2] = " NotTaken";
+					BTB[index][2] = "NotTaken";
 					BTB[index][3] = "10";
 				}
 				else if (BTB[index][2] == "NotTaken") {
 					rightPrediction++;
-					BTB[index][2] = " NotTaken";
+					BTB[index][2] = "NotTaken";
 					BTB[index][3] = "11";
 				}
 
 			}
+			if (rightPrediction + wrongPrediction != hit)
+				cout << "Hello";
 		}
 	}
+
+	cout << "\nHits: "<<hit;
+	cout << "\nMiss: " << miss;
+	cout << "\nRight Predictions: " << rightPrediction;
+	cout << "\nWrong Predictions: " << wrongPrediction;
+	cout << "\nCollisions: " << collisions;
 
 	getchar();
 	getchar();
