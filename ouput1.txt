@@ -1,0 +1,152 @@
+trace_sample
+
+Zero_One(0,1)- 256 BTB:
+Hits: 2037
+Miss: 178
+Right Predictions: 1910
+Wrong Predictions: 127
+Collisions: 52
+Addition: 2037
+
+
+Zero_One(0,1) - 512 BTB:
+Hits: 2047
+Miss: 168
+Right Predictions: 1919
+Wrong Predictions: 128
+Collisions: 18
+Addition: 2047
+
+
+Zero_One(0,1) - 1024 BTB:
+Hits: 2049
+Miss: 167
+Right Predictions: 1920
+Wrong Predictions: 129
+Collisions: 6
+Addition: 2049
+
+
+Zero Two Class State Machine - 256 BTB:
+Hits: 2037
+Miss: 178
+Right Predictions: 1912
+Wrong Predictions: 125
+Collisions: 52
+
+Zero Two Class State Machine - 512 BTB:
+Hits: 2047
+Miss: 168
+Right Predictions: 1922
+Wrong Predictions: 125
+Collisions: 18
+
+Zero Two Class State Machine - 1024 BTB:
+Hits: 2049
+Miss: 167
+Right Predictions: 1922
+Wrong Predictions: 127
+Collisions: 6
+
+ZeroTwo(0,2) for state machine SB - 256 BTB:
+Hits: 2037
+Miss: 178
+Right Predictions: 1914
+Wrong Predictions: 123
+Collisions: 52
+Addition: 2037
+
+ZeroTwo(0,2) for state machine SB - 512 BTB:
+Hits: 2047
+Miss: 168
+Right Predictions: 1924
+Wrong Predictions: 123
+Collisions: 18
+Addition: 2047
+
+ZeroTwo(0,2) for state machine SB - 1024 BTB:
+Hits: 2049
+Miss: 167
+Right Predictions: 1925
+Wrong Predictions: 124
+Collisions: 6
+Addition: 2049
+
+Two Way Zero Two(0,2) Class State Machine:
+Hits: 2049
+Miss: 167
+Right Predictions: 1922
+Wrong Predictions: 127
+Collisions: 0
+
+Two Way Zero Two(0,2) SM_B:
+Hits: 2049
+Miss: 167
+Right Predictions: 1925
+Wrong Predictions: 124
+Collisions: 0
+
+
+Eqntott_integer
+
+ZeroTwo(0,2) for state machine B:
+Hits: 146372
+Miss: 2533
+Right Predictions: 126549
+Wrong Predictions: 19823
+Collisions: 2146
+
+Two Way Zero Two(0,2) SM_B:
+Hits: 146703
+Miss: 2213
+Right Predictions: 126475
+Wrong Predictions: 20228
+Collisions: 1773
+
+Espresso_integer
+
+ZeroTwo(0,2) for state machine B:
+Hits: 132232
+Miss: 954
+Right Predictions: 125309
+Wrong Predictions: 6923
+Collisions: 586
+
+Two Way Zero Two(0,2) SM_B:
+Hits: 132507
+Miss: 693
+Right Predictions: 125528
+Wrong Predictions: 6979
+Collisions: 284
+
+Mdljdp2_FP
+
+ZeroTwo(0,2) for state machine B:
+Hits: 128084
+Miss: 3435
+Right Predictions: 118571
+Wrong Predictions: 9513
+Collisions: 2789
+
+Two Way Zero Two(0,2) SM_B:
+Hits: 130838
+Miss: 1764
+Right Predictions: 121055
+Wrong Predictions: 9783
+Collisions: 1013
+
+Wave 5_FP
+
+ZeroTwo(0,2) for state machine B:
+Hits: 90166
+Miss: 883
+Right Predictions: 82911
+Wrong Predictions: 7255
+Collisions: 396
+
+Two Way Zero Two(0,2) SM_B:
+Hits: 90312
+Miss: 743
+Right Predictions: 83028
+Wrong Predictions: 7284
+Collisions: 176
