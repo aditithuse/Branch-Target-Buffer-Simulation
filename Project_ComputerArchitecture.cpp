@@ -38,7 +38,7 @@ int MapAddress(string address) {
 	str += address[3];
 	str += address[4];
 	str += address[5];
-	int num = stoi(str, 0, 16) / 4;
+	int num = stoi(str, 0, 16) / 8;
 	return num;
 }
 
@@ -144,8 +144,9 @@ void ZeroOne(string* trace, int count) {
 	cout << "\nWrong Predictions: " << wrongPrediction;
 	cout << "\nCollisions: " << collisions;
 	cout << "\nAddition: " << rightPrediction + wrongPrediction;
-	cout << "\nHit rate:" << (float(hit) / (hit + miss))*100;
-	cout << "\nAccuracy:" << (float(rightPrediction) / hit) *100;
+	cout << "\nHit rate:" << (float(hit) / (hit + miss)) * 100;
+	cout << "\nAccuracy:" << (float(rightPrediction) / hit) * 100;
+	cout << "\nNumber of penalty cycles:" << (miss + wrongPrediction) * 8;
 
 }
 
@@ -270,6 +271,7 @@ void ZeroTwoClassStateMachine(string* trace, int count) {
 	cout << "\nCollisions: " << collisions;
 	cout << "\nHit rate:" << (float(hit) / (hit + miss)) * 100;
 	cout << "\nAccuracy:" << (float(rightPrediction) / hit) * 100;
+	cout << "\nNumber of penalty cycles:" << (miss + wrongPrediction) * 8;
 }
 
 void ZeroTwoSM_B(string* trace, int count) {
@@ -391,6 +393,7 @@ void ZeroTwoSM_B(string* trace, int count) {
 	cout << "\nCollisions: " << collisions;
 	cout << "\nHit rate:" << (float(hit) / (hit + miss)) * 100;
 	cout << "\nAccuracy:" << (float(rightPrediction) / hit) * 100;
+	cout << "\nNumber of penalty cycles:" << (miss + wrongPrediction) * 8;
 }
 
 void TwoWayZeroTwoClassSM(string* trace, int count) {
@@ -548,6 +551,7 @@ void TwoWayZeroTwoClassSM(string* trace, int count) {
 	cout << "\nCollisions: " << collisions;
 	cout << "\nHit rate:" << (float(hit) / (hit + miss)) * 100;
 	cout << "\nAccuracy:" << (float(rightPrediction) / hit) * 100;
+	cout << "\nNumber of penalty cycles:" << (miss + wrongPrediction) * 8;
 }
 
 void TwoWayZeroTwoSM_B(string* trace, int count) {
@@ -705,6 +709,7 @@ void TwoWayZeroTwoSM_B(string* trace, int count) {
 	cout << "\nCollisions: " << collisions;
 	cout << "\nHit rate:" << (float(hit) / (hit + miss)) * 100;
 	cout << "\nAccuracy:" << (float(rightPrediction) / hit) * 100;
+	cout << "\nNumber of penalty cycles:" << (miss + wrongPrediction) * 8;
 
 }
 
@@ -712,7 +717,7 @@ void OneTwoClassStateMachine(string* trace, int count) {
 	bool flag = false;
 	string BTB[1024][5];
 
-	for (int i = 0; i < 512; i++)
+	for (int i = 0; i < 1024; i++)
 		for (int j = 0; j < 5; j++)
 			BTB[i][j] = "";
 
@@ -844,7 +849,149 @@ void OneTwoClassStateMachine(string* trace, int count) {
 	cout << "\nCollisions: " << collisions;
 	cout << "\nHit rate:" << (float(hit) / (hit + miss)) * 100;
 	cout << "\nAccuracy:" << (float(rightPrediction) / hit) * 100;
+	cout << "\nNumber of penalty cycles:" << (miss + wrongPrediction) * 8;
 }
+
+void OneTwoSM_B(string* trace, int count) {
+	bool flag = false;
+	string BTB[1024][5];
+
+	for (int i = 0; i < 1024; i++)
+		for (int j = 0; j < 5; j++)
+			BTB[i][j] = "";
+
+	int hit = 0, miss = 0, rightPrediction = 0, wrongPrediction = 0, collisions = 0, NoOfInstructions = 0;
+
+	int index = 0;
+	int bufferIndex = 0;
+	string branchHistory = "0";
+	for (int i = 0; i < count; i++) {
+
+		flag = false;
+
+		//check whether entry is in BTB
+		bufferIndex = MapAddress(trace[i]);
+		if (trace[i] == BTB[bufferIndex][0])
+		{
+			flag = true;
+			index = bufferIndex;
+		}
+
+
+		//if entry not in BTB
+		if (flag == false && (i + 1) < count) {
+			string result = VerifyNextAddress(trace[i]);
+
+			//if branch not taken
+			if (trace[i + 1] == result)
+				continue;
+
+			//Branch taken
+			else
+			{
+				miss++;
+				bufferIndex = MapAddress(trace[i]);
+				if (BTB[bufferIndex][0] != "") {
+					collisions++;
+				}
+
+				BTB[bufferIndex][0] = trace[i];
+				BTB[bufferIndex][1] = trace[i + 1];
+				BTB[bufferIndex][2] = "01";
+				BTB[bufferIndex][3] = "01";
+				BTB[bufferIndex][4] = "1";
+			}
+		}
+
+		if (flag == true) {
+
+			hit++;
+			string result = VerifyNextAddress(trace[i]);
+			//taken
+			if (result != trace[i + 1]) {
+
+				//trace taken BTB history-taken 
+				if (BTB[bufferIndex][4] == "1")
+				{
+					if (BTB[bufferIndex][3] == "00" || BTB[bufferIndex][3] == "01") {
+						//Prediction right
+						rightPrediction++;
+						BTB[bufferIndex][3] = "00";
+					}
+					else if (BTB[bufferIndex][3] == "10" || BTB[bufferIndex][3] == "11") {
+						wrongPrediction++;
+						if (BTB[bufferIndex][3] == "10")
+							BTB[bufferIndex][3] = "00";
+						if (BTB[bufferIndex][3] == "11")
+							BTB[bufferIndex][3] = "10";
+					}
+				}
+				//trace taken BTB-History not taken
+				else if (BTB[bufferIndex][4] == "0") {
+					if (BTB[bufferIndex][2] == "00" || BTB[bufferIndex][2] == "01") {
+						//Prediction right
+						rightPrediction++;
+						BTB[bufferIndex][2] = "00";
+					}
+					else if (BTB[bufferIndex][2] == "10" || BTB[bufferIndex][2] == "11") {
+						wrongPrediction++;
+						if (BTB[bufferIndex][2] == "10")
+							BTB[bufferIndex][2] = "00";
+						if (BTB[bufferIndex][2] == "11")
+							BTB[bufferIndex][2] = "10";
+					}
+				}
+				BTB[bufferIndex][4] = "1";
+			}
+
+			else if (result == trace[i + 1]) {
+				//trace not taken BTB history taken
+				if (BTB[bufferIndex][4] == "1")
+				{
+					if (BTB[bufferIndex][3] == "00" || BTB[bufferIndex][3] == "01") {
+						wrongPrediction++;
+						if (BTB[bufferIndex][3] == "00")
+							BTB[bufferIndex][3] = "01";
+
+						if (BTB[bufferIndex][3] == "01")
+							BTB[bufferIndex][3] = "10";
+					}
+					else if (BTB[bufferIndex][3] == "10" || BTB[bufferIndex][3] == "11") {
+						rightPrediction++;
+						BTB[bufferIndex][3] = "11";
+					}
+				}
+				//trace not taken BTB-histry not taken
+				else if (BTB[bufferIndex][4] == "0") {
+					if (BTB[bufferIndex][2] == "00" || BTB[bufferIndex][2] == "01") {
+						wrongPrediction++;
+						if (BTB[bufferIndex][2] == "00")
+							BTB[bufferIndex][2] = "01";
+						if (BTB[bufferIndex][2] == "01")
+							BTB[bufferIndex][2] = "10";
+					}
+					else if (BTB[bufferIndex][2] == "10" || BTB[bufferIndex][2] == "11") {
+						rightPrediction++;
+						BTB[bufferIndex][2] = "11";
+					}
+				}
+				BTB[bufferIndex][4] = "0";
+			}
+
+		}
+	}
+
+	cout << "\n\One Two Class State Machine:\nHits: " << hit;
+	cout << "\nMiss: " << miss;
+	cout << "\nRight Predictions: " << rightPrediction;
+	cout << "\nWrong Predictions: " << wrongPrediction;
+	cout << "\nCollisions: " << collisions;
+	cout << "\nHit rate:" << (float(hit) / (hit + miss)) * 100;
+	cout << "\nAccuracy:" << (float(rightPrediction) / hit) * 100;
+	cout << "\nNumber of penalty cycles:" << (miss + wrongPrediction) * 8;
+}
+
+
 void main(int argc, char *argv[])
 {
 	int count = 0;
@@ -883,7 +1030,10 @@ void main(int argc, char *argv[])
 	//ZeroTwoSM_B(trace, count);
 
 	//One Two Class State Machine (1,2)
-	OneTwoClassStateMachine(trace, count);
+	//OneTwoClassStateMachine(trace, count);
+
+	//One Two State Machine B(1,2)
+	//OneTwoSM_B(trace, count); 
 
 	//2 way class state machine(0,2)
 	//TwoWayZeroTwoClassSM(trace, count);
