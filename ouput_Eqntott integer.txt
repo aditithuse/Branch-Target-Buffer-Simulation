@@ -1,0 +1,200 @@
+Eqntott_integer
+
+Size-256
+
+Zero_One(0,1):
+Hits: 130019
+Miss: 14046
+Right Predictions: 109335
+Wrong Predictions: 20684
+Collisions: 13826
+Addition: 130019
+Hit rate:90.2502
+Accuracy:84.0916
+Number of penalty cycles:277840
+
+Zero Two Class State Machine:
+Hits: 130019
+Miss: 14046
+Right Predictions: 112655
+Wrong Predictions: 17364
+Collisions: 13826
+Hit rate:90.2502
+Accuracy:86.645
+Number of penalty cycles:251280
+
+ZeroTwo(0,2) for state machine B:
+Hits: 130019
+Miss: 14046
+Right Predictions: 111909
+Wrong Predictions: 18110
+Collisions: 13826
+Hit rate:90.2502
+Accuracy:86.0713
+Number of penalty cycles:257248
+
+One Two Class State Machine:
+Hits: 130019
+Miss: 14046
+Right Predictions: 112997
+Wrong Predictions: 17022
+Collisions: 13826
+Hit rate:90.2502
+Accuracy:86.9081
+Number of penalty cycles:248544
+
+One two State Machine B :
+Hits: 130019
+Miss: 14046
+Right Predictions: 110284
+Wrong Predictions: 19735
+Collisions: 13826
+Hit rate:90.2502
+Accuracy:84.8214
+Number of penalty cycles:270248
+
+Size-512
+
+Zero_One(0,1):
+Hits: 142772
+Miss: 5141
+Right Predictions: 119911
+Wrong Predictions: 22861
+Collisions: 4818
+Addition: 142772
+Hit rate:96.5243
+Accuracy:83.9878
+Number of penalty cycles:224016
+
+Zero Two Class State Machine:
+Hits: 142772
+Miss: 5141
+Right Predictions: 124250
+Wrong Predictions: 18522
+Collisions: 4818
+Hit rate:96.5243
+Accuracy:87.0269
+Number of penalty cycles:189304
+
+ZeroTwo(0,2) for state machine B:
+Hits: 142772
+Miss: 5141
+Right Predictions: 123485
+Wrong Predictions: 19287
+Collisions: 4818
+Hit rate:96.5243
+Accuracy:86.4911
+Number of penalty cycles:195424
+
+One Two Class State Machine:
+Hits: 142772
+Miss: 5141
+Right Predictions: 124794
+Wrong Predictions: 17978
+Collisions: 4818
+Hit rate:96.5243
+Accuracy:87.4079
+Number of penalty cycles:184952
+
+One two State Machine B :
+Hits: 142772
+Miss: 5141
+Right Predictions: 121228
+Wrong Predictions: 21544
+Collisions: 4818
+Hit rate:96.5243
+Accuracy:84.9102
+Number of penalty cycles:213480
+
+size-1024
+
+Zero_One(0,1):
+Hits: 146372
+Miss: 2533
+Right Predictions: 123080
+Wrong Predictions: 23292
+Collisions: 2146
+Addition: 146372
+Hit rate:98.2989
+Accuracy:84.0871
+Number of penalty cycles:206600
+
+Zero Two Class State Machine:
+Hits: 146372
+Miss: 2533
+Right Predictions: 127302
+Wrong Predictions: 19070
+Collisions: 2146
+Hit rate:98.2989
+Accuracy:86.9715
+Number of penalty cycles:172824
+
+ZeroTwo(0,2) state machine B:
+Hits: 146372
+Miss: 2533
+Right Predictions: 126549
+Wrong Predictions: 19823
+Collisions: 2146
+Hit rate:98.2989
+Accuracy:86.4571
+Number of penalty cycles:178848
+
+Two Way Zero Two(0,2) Class State Machine:
+Hits: 147605
+Miss: 1311
+Right Predictions: 128062
+Wrong Predictions: 19543
+Collisions: 871
+Hit rate:99.1196
+Accuracy:86.7599
+Number of penalty cycles:166832
+
+Two Way Zero Two(0,2) SM_B:
+Hits: 146703
+Miss: 2213
+Right Predictions: 126475
+Wrong Predictions: 20228
+Collisions: 1773
+Hit rate:98.5139
+Accuracy:86.2116
+Number of penalty cycles:179528
+
+One Two Class State Machine:
+Hits: 142772
+Miss: 5141
+Right Predictions: 124794
+Wrong Predictions: 17978
+Collisions: 4818
+Hit rate:96.5243
+Accuracy:87.4079
+Number of penalty cycles:184952
+
+One two State Machine B :
+Hits: 142772
+Miss: 5141
+Right Predictions: 121228
+Wrong Predictions: 21544
+Collisions: 4818
+Hit rate:96.5243
+Accuracy:84.9102
+Number of penalty cycles:213480
+
+Two Way One Two(1,2) Class State Machine:
+Hits: 147606
+Miss: 1310
+Right Predictions: 125619
+Wrong Predictions: 21987
+Collisions: 870
+Hit rate:99.1203
+Accuracy:85.1043
+Number of penalty cycles:186376
+
+Two Way One Two(1,2) State Machine B:
+Hits: 147606
+Miss: 1310
+Right Predictions: 124867
+Wrong Predictions: 22739
+Collisions: 870
+Hit rate:99.1203
+Accuracy:84.5948
+Number of penalty cycles:192392
