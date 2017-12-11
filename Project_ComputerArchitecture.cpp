@@ -38,7 +38,7 @@ int MapAddress(string address) {
 	str += address[3];
 	str += address[4];
 	str += address[5];
-	int num = stoi(str, 0, 16) / 4;
+	int num = stoi(str, 0, 16) / 8;
 	return num;
 }
 
@@ -480,7 +480,7 @@ void TwoWayZeroTwoClassSM(string* trace, int count) {
 						rightPrediction++;
 						BTB[index][2] = "Taken";
 						BTB[index][3] = "00";
-						}
+					}
 					//wrong address
 					else
 					{
@@ -783,8 +783,8 @@ void OneTwoClassStateMachine(string* trace, int count) {
 							wrongPrediction++;
 							BTB[bufferIndex][1] == trace[i + 1];
 						}
-					}					
-					
+					}
+
 					else if (BTB[bufferIndex][3] == "10" || BTB[bufferIndex][3] == "11") {
 						wrongPrediction++;
 						if (BTB[bufferIndex][3] == "10")
@@ -801,12 +801,12 @@ void OneTwoClassStateMachine(string* trace, int count) {
 							rightPrediction++;
 							BTB[bufferIndex][2] = "00";
 						}
-						else{
+						else {
 							wrongPrediction++;
-						BTB[bufferIndex][1] == trace[i + 1];
+							BTB[bufferIndex][1] == trace[i + 1];
 						}
 					}
-					
+
 					else if (BTB[bufferIndex][2] == "10" || BTB[bufferIndex][2] == "11") {
 						wrongPrediction++;
 						if (BTB[bufferIndex][2] == "10")
@@ -1006,7 +1006,7 @@ void OneTwoSM_B(string* trace, int count) {
 		}
 	}
 
-	cout << "\n\One Two Class State Machine:\nHits: " << hit;
+	cout << "\n\One two State Machine B :\nHits: " << hit;
 	cout << "\nMiss: " << miss;
 	cout << "\nRight Predictions: " << rightPrediction;
 	cout << "\nWrong Predictions: " << wrongPrediction;
@@ -1195,8 +1195,198 @@ void TwoWayOneTwoClassSM(string* trace, int count) {
 
 		}
 	}
-	
+
 	std::cout << "\n\nTwo Way One Two(1,2) Class State Machine:\nHits: " << hit;
+	cout << "\nMiss: " << miss;
+	cout << "\nRight Predictions: " << rightPrediction;
+	cout << "\nWrong Predictions: " << wrongPrediction;
+	cout << "\nCollisions: " << collisions;
+	cout << "\nHit rate:" << (float(hit) / (hit + miss)) * 100;
+	cout << "\nAccuracy:" << (float(rightPrediction) / hit) * 100;
+	cout << "\nNumber of penalty cycles:" << (miss + wrongPrediction) * 8;
+}
+
+void TwoWayOneTwoSM_B(string* trace, int count) {
+	bool flag = false;
+	string BTB[1024][6];
+
+	for (int i = 0; i < 1024; i++)
+		for (int j = 0; j < 6; j++)
+			BTB[i][j] = "";
+
+	int hit = 0, miss = 0, rightPrediction = 0, wrongPrediction = 0, collisions = 0, NoOfInstructions = 0;
+
+	int counterBTB = 0;
+	int index = 0;
+	int bufferIndex = 0;
+	for (int i = 0; i < count; i++) {
+
+		flag = false;
+
+		//check whether entry is in BTB
+		bufferIndex = MapAddress(trace[i]);
+		if (trace[i] == BTB[bufferIndex][0])
+		{
+			flag = true;
+			index = bufferIndex;
+		}
+		if (trace[i] == BTB[bufferIndex + 512][0])
+		{
+			flag = true;
+			index = bufferIndex + 512;
+		}
+		//if entry not in BTB
+		if (flag == false && (i + 1) < count) {
+			string result = VerifyNextAddress(trace[i]);
+
+			//if branch not taken
+			if (trace[i + 1] == result)
+				continue;
+
+			//Branch taken
+			else
+			{
+				int ind = 0;
+				miss++;
+				bufferIndex = MapAddress(trace[i]);
+				if (BTB[bufferIndex][0] != "" && BTB[bufferIndex + 512][0] != "") {
+					collisions++;
+					if (BTB[bufferIndex][5] == "0")
+						ind = bufferIndex;
+					if (BTB[bufferIndex + 512][5] == "0")
+						ind = bufferIndex + 512;
+				}
+				else if (BTB[bufferIndex][0] == "") {
+					ind = bufferIndex;
+					BTB[ind][5] = "1";
+					BTB[ind + 512][5] = "0";
+				}
+				else if (BTB[bufferIndex][0] != "" && BTB[bufferIndex + 512][0] == "") {
+					ind = bufferIndex + 512;
+					BTB[ind][5] = "1";
+					BTB[bufferIndex][5] = "0";
+				}
+
+				BTB[ind][0] = trace[i];
+				BTB[ind][1] = trace[i + 1];
+				BTB[ind][2] = "01";
+				BTB[ind][3] = "01";
+				BTB[ind][4] = "1";
+			}
+		}
+
+		if (flag == true) {
+
+			hit++;
+
+			string result = VerifyNextAddress(trace[i]);
+			//taken
+			if (result != trace[i + 1]) {
+
+				//trace taken BTB history-taken 
+				if (BTB[index][4] == "1")
+				{
+					if (BTB[index][3] == "00" || BTB[index][3] == "01") {
+						if (BTB[index][1] == trace[i + 1]) {
+							//Prediction right
+							rightPrediction++;
+							BTB[index][3] = "00";
+						}
+						//wrong ADDRESS
+						else {
+							wrongPrediction++;
+							BTB[index][1] == trace[i + 1];
+						}
+					}
+					else if (BTB[index][3] == "10" || BTB[index][3] == "11") {
+						wrongPrediction++;
+						if (BTB[index][3] == "10")
+							BTB[index][3] = "00";
+						if (BTB[index][3] == "11")
+							BTB[index][3] = "10";
+					}
+					BTB[index][4] = "1";
+					BTB[index][5] = "1";
+					if (index < 512)
+						BTB[index + 512][5] = "0";
+					else
+						BTB[index - 512][5] = "0";
+				}
+
+				//trace taken BTB-History not taken
+				else if (BTB[index][4] == "0") {
+					if (BTB[index][2] == "00" || BTB[index][2] == "01") {
+						if (BTB[index][1] == trace[i + 1]) {
+							//Prediction right
+							rightPrediction++;
+							BTB[bufferIndex][2] = "00";
+						}
+						else {
+							wrongPrediction++;
+							BTB[bufferIndex][1] == trace[i + 1];
+						}
+					}
+
+					else if (BTB[index][2] == "10" || BTB[index][2] == "11") {
+						wrongPrediction++;
+						if (BTB[bufferIndex][2] == "10")
+							BTB[bufferIndex][2] = "00";
+						if (BTB[bufferIndex][2] == "11")
+							BTB[bufferIndex][2] = "10";
+					}
+				}
+				BTB[index][4] = "1";
+				BTB[index][5] = "1";
+				if (index < 512)
+					BTB[index + 512][5] = "0";
+				else
+					BTB[index - 512][5] = "0";
+			}
+
+			else if (result == trace[i + 1]) {
+				//trace not taken BTB history taken
+				if (BTB[index][4] == "1")
+				{
+					if (BTB[index][3] == "00" || BTB[index][3] == "01") {
+						wrongPrediction++;
+						if (BTB[index][3] == "01")
+							BTB[index][3] = "10";
+
+						if (BTB[index][3] == "00")
+							BTB[index][3] = "01";
+					}
+					else if (BTB[index][3] == "10" || BTB[index][3] == "11") {
+						rightPrediction++;
+						BTB[index][3] = "11";
+					}
+				}
+				//trace not taken BTB-histry not taken
+				else if (BTB[index][4] == "0") {
+					if (BTB[index][2] == "00" || BTB[index][2] == "01") {
+						wrongPrediction++;
+						if (BTB[index][2] == "00")
+							BTB[index][2] = "01";
+						if (BTB[index][2] == "01")
+							BTB[index][2] = "10";
+					}
+					else if (BTB[index][2] == "10" || BTB[index][2] == "11") {
+						rightPrediction++;
+						BTB[index][2] = "11";
+					}
+					BTB[index][4] = "0";
+					BTB[index][5] = "1";
+					if (index < 512)
+						BTB[index + 512][5] = "0";
+					else
+						BTB[index - 512][5] = "0";
+				}
+
+			}
+
+		}
+	}
+
+	std::cout << "\n\nTwo Way One Two(1,2) State Machine B:\nHits: " << hit;
 	cout << "\nMiss: " << miss;
 	cout << "\nRight Predictions: " << rightPrediction;
 	cout << "\nWrong Predictions: " << wrongPrediction;
@@ -1243,20 +1433,23 @@ void main(int argc, char *argv[])
 	//zero Two State Machine B(0,2)
 	//ZeroTwoSM_B(trace, count);
 
+	//2 way class state machine(0,2)
+	TwoWayZeroTwoClassSM(trace, count);
+
+	//2 way State Machine B(0,2)
+	TwoWayZeroTwoSM_B(trace, count);
+
 	//One Two Class State Machine (1,2)
 	//OneTwoClassStateMachine(trace, count);
 
 	//One Two State Machine B(1,2)
 	//OneTwoSM_B(trace, count); 
 
-	//2 way class state machine(0,2)
-	//TwoWayZeroTwoClassSM(trace, count);
-
 	//2 way one two class state machine(1,2)
-	//TwoWayOneTwoClassSM(trace, count);
+	TwoWayOneTwoClassSM(trace, count);
 
-	//2 way State Machine B(0,2)
-	//TwoWayZeroTwoSM_B(trace, count);
+	//2 way one two state machine B (1,2)
+	TwoWayOneTwoSM_B(trace, count);
 
 	getchar();
 }
